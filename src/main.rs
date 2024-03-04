@@ -16,15 +16,13 @@ type Client = hyper_util::client::legacy::Client<hyper_tls::HttpsConnector<HttpC
 
 /// 命令行
 #[derive(Debug, Clone, Parser)]
-#[command(
-    about = r#"
+#[command(about = r#"
     傻逼后端反向代理
 
     启动方式:
     sb_backend_proxy --host [你要代理的地址]
     访问方式:
-    http://localhost:4000/你的api路径"#
-)]
+    http://localhost:4000/你的api路径"#)]
 struct Cmd {
     /// 代理服务端口 默认4000
     #[arg(long, default_value = "4000")]
@@ -52,8 +50,8 @@ async fn main() {
             .build(HttpsConnector::new());
     // 设置处理函数 基于根地址
     let app = Router::new()
-        .route("/:name/*path", axum::routing::any(handler_dynamic))
-        .route("/:name", axum::routing::any(handler_static))
+        .route("/*path", axum::routing::any(handler_dynamic))
+        .route("/", axum::routing::any(handler_static))
         .with_state((cmd.clone(), client));
 
     let address = format!("127.0.0.1:{}", cmd.server_port);
