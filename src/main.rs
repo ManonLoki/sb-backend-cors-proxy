@@ -20,19 +20,20 @@ type Client = hyper_util::client::legacy::Client<hyper_tls::HttpsConnector<HttpC
     傻逼后端反向代理
 
     启动方式:
-    sb_backend_proxy --host [你要代理的地址]
-    访问方式:
+    sb_backend_proxy --backend-host=[你要代理的地址]
+
+    前端访问方式:
     http://localhost:4000/你的api路径"#)]
 struct Cmd {
-    /// 代理服务端口 默认4000
+    /// 这个代理服务自己的端口 默认4000
     #[arg(long, default_value = "4000")]
     server_port: u16,
 
-    /// 要代理的目标地址 如 http://127.0.0.1:8888/
+    /// 要代理的后端地址 如  http://api.xxx.com:80
     #[arg(long)]
-    host: String,
+    backend_host: String,
 
-    /// 允许跨域的头 例如 Content-Type,Authorization等等 逗号分割
+    /// 期望允许跨域的头 例如 Content-Type,Authorization等等 逗号分割 默认支持Content-Type,Authorization
     #[arg(long)]
     allow_headers: Option<String>,
 }
@@ -111,7 +112,7 @@ async fn handler(
             path_query = path_query[1..].to_string();
         }
 
-        let uri = format!("{}/{}", cmd.host, path_query);
+        let uri = format!("{}/{}", cmd.backend_host, path_query);
 
         tracing::info!("请求 {} [{}]", uri, req.method());
 
