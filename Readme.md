@@ -14,9 +14,9 @@ cargo build --release
 # 使用方式
 ```
 /// 启动
-./sb-backend-cors-proxy --host=你要代理的域名
+./sb-backend-cors-proxy --backend-host=你要代理的后端域名 如 http(s)://xxx.com
 
 /// Api请求
-http(s)://127.0.0.1:4000/你的api地址
+http://127.0.0.1:4000/你的api地址
 ```
 
